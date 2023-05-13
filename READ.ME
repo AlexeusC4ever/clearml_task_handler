@@ -1,0 +1,24 @@
+1. Установить gitlab-runner:
+# Download the binary for your system
+sudo curl -L --output /usr/local/bin/gitlab-runner https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-amd64
+
+# Give it permission to execute
+sudo chmod +x /usr/local/bin/gitlab-runner
+
+# Create a GitLab Runner user
+sudo useradd --comment 'GitLab Runner' --create-home gitlab-runner --shell /bin/bash
+
+# Install and run as a service
+sudo gitlab-runner install --user=gitlab-runner --working-directory=/home/gitlab-runner
+sudo gitlab-runner start
+
+# Здесь вместо вместо $REGISTRATION_TOKEN вставить свой токен, найти его можно, зайдя в свой проект на гитлабе и перейдя в settings->ci/cd->runners
+sudo gitlab-runner register --url http://10.24.65.46:999/ --registration-token $REGISTRATION_TOKEN
+
+Его можно запускать по-разному, пока можно просто указать shell при настройке, но тогда в файле пайплайна нужно будет указать путь до скрипта клиента.
+Также в тегах прописать clearml, ubuntu
+Позже можно будет попробовать собрать контейнер, закинув туда все необходимое.
+
+
+2. 
+

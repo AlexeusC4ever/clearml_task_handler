@@ -1,0 +1,22 @@
+image: ubuntu
+
+before_script:
+  - echo "running jobs"
+
+stages:
+  - build
+
+build job:
+  stage: build
+  script:
+    - python3 /home/clearml/clearml/task_handler/client/clearml_task_bot_client.py ${CI_PROJECT_URL}
+  tags:
+    - linux
+    - clearml
+  only:
+    - pushes
+    - /^experiment.*$/
+    - master
+  artifacts:
+    paths:
+      - /home/clearml/Gitlab_artifacts
