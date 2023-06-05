@@ -1,12 +1,19 @@
-QUEUE_DEFAULT_PREFIX = 'queue_for_gpu_mount_'
-
+# QUEUE_DEFAULT_PREFIX = 'Z_DO_NOT_TOUCH_'
+# QUEUE_DEFAULT_POSTFIX = '_GPU_QUEUE_FOR_EXECUTION'
+QUEUE_DEFAULT_PREFIX = "queue_for_gpu_mount_"
+QUEUE_DEFAULT_POSTFIX = ""
 
 class ClearMLTask:
 
-    def __init__(self, task_cfg, web_socket, id):
+    def __init__(self, task_cfg, web_socket, id, created_from_cli=True):
+        self.created_from_cli = created_from_cli
+        self.gpu_mount_requirement = 0 if 'gpu_count' not in task_cfg else int(task_cfg['gpu_count'])
+        if created_from_cli is False:
+            self.id = task_cfg['task_id']
+            return
+        
         self.id = id
         self.web_socket = web_socket
-        self.gpu_mount_requirement = 0 if 'gpu_count' not in task_cfg else int(task_cfg['gpu_count'])
         self.used_gpus = []
         self.create_task_command = f"clearml-task" \
         # --project {project_name} \
@@ -36,7 +43,7 @@ class ClearMLTask:
         self.create_task_command += self.__add_cli_parameter__(task_cfg, "branch", "branch")
         self.create_task_command += self.__add_cli_parameter__(task_cfg, "script", "script")
         self.create_task_command += self.__add_cli_parameter__(task_cfg, "docker_image", "docker")
-        self.create_task_command += ' --queue ' + QUEUE_DEFAULT_PREFIX + str(self.gpu_mount_requirement)
+        self.create_task_command += ' --queue ' + QUEUE_DEFAULT_PREFIX + str(self.gpu_mount_requirement) + QUEUE_DEFAULT_POSTFIX
 
         self.create_task_command += self.__add_cli_parameter__(task_cfg, "requirements_file", "requirements", nessesary=False)
         self.create_task_command += self.__add_cli_parameter__(task_cfg, "additional_script_args", "args", nessesary=False)

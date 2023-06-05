@@ -90,7 +90,7 @@ async def main():
         await ws.send_json(task_cfg)
         # await ws.send_str("AAAAA")
         async for msg in ws:
-            print('Message received from server:', msg.data)
+            # print('Message received from server:', msg.data)
             # await prompt_and_send(ws)
 
             if msg.type in (aiohttp.WSMsgType.CLOSED,
